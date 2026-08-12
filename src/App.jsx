@@ -248,7 +248,7 @@ function Dashboard({ session }) {
 
         <section className="manager-bar">
           <div>
-            <h2 className="hidden">Co-op Manager</h2>
+            {/* <h2 className="hidden">Co-op Manager</h2> */}
             <div className="manager-sub">
               <span>Mindanao Valley Co-operative</span>
               <PagasaForecast forecast={forecast} />
