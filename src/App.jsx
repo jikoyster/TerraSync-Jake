@@ -476,7 +476,7 @@ function FarmerProfile({ farmer, onBack, onEdit, onDelete, onToggle }) {
           <h3>Farm Details</h3>
           <div className="profile-fields">
             <Field label="Crops" wide><span className="field-value">{farmer.crops || '—'}</span></Field>
-            <Field label="Status" wide><StatusToggle status={farmer.status} onToggle={() => onToggle(farmer)} /></Field>
+            <Field label="Status" wide><span className="field-value">{farmer.status || '—'}</span></Field>
             <Field label="Created" wide><span className="field-value">{formatDate(farmer.created_at)}</span></Field>
             <Field label="Last Updated" wide><span className="field-value">{formatDate(farmer.updated_at || farmer.created_at)}</span></Field>
           </div>
