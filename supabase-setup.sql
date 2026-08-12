@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS public.farmers (
     status character varying(10) NOT NULL DEFAULT 'active',
     address character varying(255) NULL,
     email character varying(255) NULL,
+    phone character varying(20) NULL,
     created_at timestamp with time zone DEFAULT now(),
     updated_at timestamp with time zone DEFAULT now(),
     CONSTRAINT farmers_pk PRIMARY KEY (farmer_id),
@@ -56,7 +57,7 @@ FOR EACH ROW
 EXECUTE FUNCTION public.set_farmers_updated_at();
 
 -- Optional sample records:
--- INSERT INTO public.farmers (rsbsa_number, name, crops, status, address, email)
+-- INSERT INTO public.farmers (rsbsa_number, name, crops, status, address, email, phone)
 -- VALUES
--- ('RSBSA-07-000001', 'Juan Dela Cruz', 'Rice, Corn', 'active', 'Davao del Norte', 'juan@example.com'),
--- ('RSBSA-07-000002', 'Maria Santos', 'Vegetables', 'active', 'Bukidnon', 'maria@example.com');
+-- ('RSBSA-07-000001', 'Juan Dela Cruz', 'Rice, Corn', 'active', 'Davao del Norte', 'juan@example.com', '+639123456789'),
+-- ('RSBSA-07-000002', 'Maria Santos', 'Vegetables', 'active', 'Bukidnon', 'maria@example.com', '+639876543210');
