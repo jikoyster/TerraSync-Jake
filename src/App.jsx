@@ -173,6 +173,7 @@ function Dashboard({ session }) {
     } else {
       showNotice(`Farmer marked as ${next}.`)
       setFarmers(prev => prev.map(f => f.farmer_id === farmer.farmer_id ? { ...f, status: next, updated_at: new Date().toISOString() } : f))
+      setViewingFarmer(prev => prev && prev.farmer_id === farmer.farmer_id ? { ...prev, status: next, updated_at: new Date().toISOString() } : prev)
     }
   }
 
@@ -476,7 +477,7 @@ function FarmerProfile({ farmer, onBack, onEdit, onDelete, onToggle }) {
           <h3>Farm Details</h3>
           <div className="profile-fields">
             <Field label="Crops" wide><span className="field-value">{farmer.crops || '—'}</span></Field>
-            <Field label="Status" wide><span className="field-value">{farmer.status || '—'}</span></Field>
+            <Field label="Status" wide><span className="status-dot">{farmer.status === 'active' ? '🟢 Active' : '🔴 Inactive'}</span></Field>
             <Field label="Created" wide><span className="field-value">{formatDate(farmer.created_at)}</span></Field>
             <Field label="Last Updated" wide><span className="field-value">{formatDate(farmer.updated_at || farmer.created_at)}</span></Field>
           </div>
