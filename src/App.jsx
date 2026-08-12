@@ -339,7 +339,7 @@ function Dashboard({ session }) {
                       ) : filtered.map(farmer => (
                         <tr key={farmer.farmer_id}>
                           <td><span className="rsbsa">{farmer.rsbsa_number}</span></td>
-                          <td><button className="link-button" onClick={() => setViewingFarmer(farmer)}><strong>{farmer.name}</strong></button></td>
+                          <td><button className="link-button" onClick={() => setViewingFarmer(farmer)}>{farmer.name}</button></td>
                           <td>{farmer.crops || '—'}</td>
                           <td><StatusToggle status={farmer.status} onToggle={() => toggleStatus(farmer)} /></td>
                           <td>
