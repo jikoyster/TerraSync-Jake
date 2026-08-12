@@ -245,25 +245,25 @@ function Dashboard({ session }) {
         </button>
       </header>
 
-      <section className="manager-bar">
-        <div>
-          <h2 class="hidden">Co-op Manager</h2>
-          <div className="manager-sub">
-            <span>Mindanao Valley Co-operative</span>
-            <PagasaForecast forecast={forecast} />
+        <section className="manager-bar">
+          <div>
+            <h2 className="hidden">Co-op Manager</h2>
+            <div className="manager-sub">
+              <span>Mindanao Valley Co-operative</span>
+              <PagasaForecast forecast={forecast} />
+            </div>
           </div>
-        </div>
-        <div className="manager-actions">
-          <button className="secondary">Switch to Vendor View</button>
-          <button className="secondary">Switch to Farmer View</button>
-          <button className="notification"><Bell size={19} /><b>0</b></button>
-          <div className="profile">
-            <div className="avatar"><UserRound size={19} /></div>
-            <div><strong>{displayName}</strong><small>Co-op Manager</small></div>
-            <ChevronDown size={16} className="profile-chevron" />
+          <div className="manager-actions">
+            <button className="secondary">Switch to Vendor View</button>
+            <button className="secondary">Switch to Farmer View</button>
+            <button className="notification"><Bell size={19} /><b>0</b></button>
+            <div className="profile">
+              <div className="avatar"><UserRound size={19} /></div>
+              <div><strong>{displayName}</strong><small>Co-op Manager</small></div>
+              <ChevronDown size={16} className="profile-chevron" />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
       {/* Tabs hidden for now
       <nav className="tabs">
