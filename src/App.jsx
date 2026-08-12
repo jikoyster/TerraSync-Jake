@@ -12,7 +12,8 @@ const EMPTY_FORM = {
   crops: '',
   status: 'active',
   address: '',
-  email: ''
+  email: '',
+  phone: ''
 }
 
 function App() {
@@ -112,6 +113,7 @@ function Dashboard({ session }) {
   const [selected, setSelected] = useState(null)
   const [query, setQuery] = useState('')
   const [deleteTarget, setDeleteTarget] = useState(null)
+  const [viewingFarmer, setViewingFarmer] = useState(null)
   const [now, setNow] = useState(new Date())
   const [forecast, setForecast] = useState({
     season: 'Habagat Season',
@@ -245,7 +247,7 @@ function Dashboard({ session }) {
 
       <section className="manager-bar">
         <div>
-          <h2>Co-op Manager</h2>
+          <h2 class="hidden">Co-op Manager</h2>
           <div className="manager-sub">
             <span>Mindanao Valley Co-operative</span>
             <PagasaForecast forecast={forecast} />
@@ -280,7 +282,15 @@ function Dashboard({ session }) {
       <main className="content">
         {notice && <div className={`toast ${notice.type}`}>{notice.type === 'success' ? <Check size={17}/> : <X size={17}/>} {notice.text}</div>}
 
-        {activeTab === 'farmers' ? (
+        {viewingFarmer ? (
+          <FarmerProfile
+            farmer={viewingFarmer}
+            onBack={() => setViewingFarmer(null)}
+            onEdit={() => { setSelected(viewingFarmer); setModal('edit'); setViewingFarmer(null) }}
+            onDelete={() => { setDeleteTarget(viewingFarmer); setViewingFarmer(null) }}
+            onToggle={toggleStatus}
+          />
+        ) : activeTab === 'farmers' ? (
           <>
             <section className="page-heading">
               <div>
@@ -312,40 +322,34 @@ function Dashboard({ session }) {
               </div>
               <div className="table-wrap">
                 <table>
-                  <thead>
-                    <tr>
-                      <th>RSBSA Number</th>
-                      <th>Farmer Name</th>
-                      <th>Crops</th>
-                      <th>Status</th>
-                      <th>Address</th>
-                      <th>Email</th>
-                      <th>Updated</th>
-                      <th className="actions-col">Actions</th>
-                    </tr>
-                  </thead>
+                    <thead>
+                      <tr>
+                        <th>RSBSA Number</th>
+                        <th>Farmer Name</th>
+                        <th>Crops</th>
+                        <th>Status</th>
+                        <th className="actions-col">Actions</th>
+                      </tr>
+                    </thead>
                   <tbody>
                     {loading ? (
-                      <tr><td colSpan="8" className="empty"><Spinner /></td></tr>
+                      <tr><td colSpan="5" className="empty"><Spinner /></td></tr>
                     ) : filtered.length === 0 ? (
-                      <tr><td colSpan="8" className="empty"><Users size={34}/><strong>No farmers found</strong><span>Add a farmer or adjust your search.</span></td></tr>
-                    ) : filtered.map(farmer => (
-                      <tr key={farmer.farmer_id}>
-                        <td><span className="rsbsa">{farmer.rsbsa_number}</span></td>
-                        <td><strong>{farmer.name}</strong></td>
-                        <td>{farmer.crops || '—'}</td>
-                        <td><StatusToggle status={farmer.status} onToggle={() => toggleStatus(farmer)} /></td>
-                        <td>{farmer.address || '—'}</td>
-                        <td>{farmer.email || '—'}</td>
-                        <td>{formatDate(farmer.updated_at || farmer.created_at)}</td>
-                        <td>
-                          <div className="row-actions">
-                            <button className="icon-button edit" title="Edit farmer" onClick={() => { setSelected(farmer); setModal('edit') }}><Edit3 size={16}/></button>
-                            <button className="icon-button delete" title="Delete farmer" onClick={() => setDeleteTarget(farmer)}><Trash2 size={16}/></button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                      <tr><td colSpan="5" className="empty"><Users size={34}/><strong>No farmers found</strong><span>Add a farmer or adjust your search.</span></td></tr>
+                      ) : filtered.map(farmer => (
+                        <tr key={farmer.farmer_id}>
+                          <td><span className="rsbsa">{farmer.rsbsa_number}</span></td>
+                          <td><button className="link-button" onClick={() => setViewingFarmer(farmer)}><strong>{farmer.name}</strong></button></td>
+                          <td>{farmer.crops || '—'}</td>
+                          <td><StatusToggle status={farmer.status} onToggle={() => toggleStatus(farmer)} /></td>
+                          <td>
+                            <div className="row-actions">
+                              <button className="icon-button edit" title="Edit farmer" onClick={() => { setSelected(farmer); setModal('edit') }}><Edit3 size={16}/></button>
+                              <button className="icon-button delete" title="Delete farmer" onClick={() => setDeleteTarget(farmer)}><Trash2 size={16}/></button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>
@@ -437,6 +441,51 @@ function PagasaForecast({ forecast }) {
   )
 }
 
+function FarmerProfile({ farmer, onBack, onEdit, onDelete, onToggle }) {
+  return (
+    <div className="profile-page">
+      <div className="profile-heading">
+        <button className="secondary back-button" onClick={onBack}><ArrowRightFromLine size={16}/> Back to Farmers</button>
+        <div className="profile-actions">
+          <button className="secondary" onClick={onEdit}><Edit3 size={16}/> Edit</button>
+          <button className="danger-button small" onClick={onDelete}><Trash2 size={16}/> Delete</button>
+        </div>
+      </div>
+
+      <section className="profile-hero">
+        <div className="profile-avatar"><UserRound size={28}/></div>
+        <div>
+          <h1>{farmer.name}</h1>
+          <div className="profile-meta">
+            <span className="rsbsa">{farmer.rsbsa_number}</span>
+            <StatusToggle status={farmer.status} onToggle={() => onToggle(farmer)} />
+          </div>
+        </div>
+      </section>
+
+      <section className="profile-grid">
+        <div className="profile-card">
+          <h3>Contact Information</h3>
+          <div className="profile-fields">
+            <Field label="Email" wide><span className="field-value">{farmer.email || '—'}</span></Field>
+            <Field label="Phone" wide><span className="field-value">{farmer.phone || '—'}</span></Field>
+            <Field label="Address" wide><span className="field-value">{farmer.address || '—'}</span></Field>
+          </div>
+        </div>
+        <div className="profile-card">
+          <h3>Farm Details</h3>
+          <div className="profile-fields">
+            <Field label="Crops" wide><span className="field-value">{farmer.crops || '—'}</span></Field>
+            <Field label="Status" wide><StatusToggle status={farmer.status} onToggle={() => onToggle(farmer)} /></Field>
+            <Field label="Created" wide><span className="field-value">{formatDate(farmer.created_at)}</span></Field>
+            <Field label="Last Updated" wide><span className="field-value">{formatDate(farmer.updated_at || farmer.created_at)}</span></Field>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
+
 function FarmerModal({ mode, farmer, onClose, onSave }) {
   const [form, setForm] = useState(farmer ? {
     rsbsa_number: farmer.rsbsa_number || '',
@@ -444,7 +493,8 @@ function FarmerModal({ mode, farmer, onClose, onSave }) {
     crops: farmer.crops || '',
     status: farmer.status || 'active',
     address: farmer.address || '',
-    email: farmer.email || ''
+    email: farmer.email || '',
+    phone: farmer.phone || ''
   } : EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -474,6 +524,7 @@ function FarmerModal({ mode, farmer, onClose, onSave }) {
             <Field label="Status" required><select value={form.status} onChange={e => update('status', e.target.value)}><option value="active">Active</option><option value="inactive">Inactive</option></select></Field>
             <Field label="Address" wide><input value={form.address} onChange={e => update('address', e.target.value)} maxLength={255} placeholder="Farm / residential address" /></Field>
             <Field label="Email"><input type="email" value={form.email} onChange={e => update('email', e.target.value)} maxLength={255} placeholder="farmer@example.com" /></Field>
+            <Field label="Phone"><input type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} maxLength={20} placeholder="e.g. +63 912 345 6789" /></Field>
           </div>
           {error && <div className="alert error modal-error">{error}</div>}
           <div className="modal-footer">
